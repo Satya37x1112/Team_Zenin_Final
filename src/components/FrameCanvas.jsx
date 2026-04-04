@@ -5,6 +5,10 @@ export default function FrameCanvas({ images, currentFrame, style = {} }) {
   const ctxRef = useRef(null)
   const animFrameRef = useRef(null)
   const lastFrameRef = useRef(-1)
+  const currentFrameRef = useRef(currentFrame)
+
+  // Keep ref in sync
+  currentFrameRef.current = currentFrame
 
   const drawFrame = useCallback((frameIndex) => {
     const canvas = canvasRef.current
@@ -32,31 +36,30 @@ export default function FrameCanvas({ images, currentFrame, style = {} }) {
     ctx.drawImage(img, sx, sy, sw, sh)
   }, [images])
 
-  // Setup canvas and draw first frame immediately
+  // Setup canvas ONCE — separate from frame drawing
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
-      canvas.width = window.innerWidth * dpr
-      canvas.height = window.innerHeight * dpr
+      // Use DPR of 1 for performance (4 canvases running)
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
       canvas.style.width = window.innerWidth + 'px'
       canvas.style.height = window.innerHeight + 'px'
-      // Cache the context — avoids repeated getContext calls
       const ctx = canvas.getContext('2d', { alpha: false })
       ctx.setTransform(1, 0, 0, 1, 0, 0)
       ctxRef.current = ctx
       lastFrameRef.current = -1
-      drawFrame(currentFrame)
+      drawFrame(currentFrameRef.current)
     }
 
     resize()
     window.addEventListener('resize', resize)
     return () => window.removeEventListener('resize', resize)
-  }, [currentFrame, drawFrame])
+  }, [drawFrame]) // no currentFrame dependency!
 
-  // Draw on frame change
+  // Draw on frame change — fires on every scroll update
   useEffect(() => {
     if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current)
     animFrameRef.current = requestAnimationFrame(() => {

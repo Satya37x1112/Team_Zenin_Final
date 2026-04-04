@@ -32,6 +32,7 @@ export default function Navbar() {
         <li className="navbar__link" id="nav-blueprint">Blueprint</li>
         <li className="navbar__link" id="nav-craft">Craft</li>
         <li className="navbar__link" id="nav-drive">Drive</li>
+        <li className="navbar__link" id="nav-f1">F1</li>
       </ul>
 
       <button className="navbar__cta" id="nav-cta">

@@ -14,6 +14,8 @@ import ExplodedScene from './components/ExplodedScene'
 import CraftScene from './components/CraftScene'
 import DrivingScene from './components/DrivingScene'
 import FutureScene from './components/FutureScene'
+import F1Transition from './components/F1Transition'
+import F1Scene from './components/F1Scene'
 import Footer from './components/Footer'
 
 import './App.css'
@@ -23,39 +25,47 @@ gsap.registerPlugin(ScrollTrigger)
 const TOTAL_FRAMES = 240
 const TOTAL_EXPLODED = 240
 const TOTAL_DRIFT = 240
+const TOTAL_F1 = 960
 
 const SCENES = [
-  { id: 'hero', label: 'Reveal', frameStart: 0, frameEnd: 39 },
-  { id: 'legacy', label: 'Legacy', frameStart: 40, frameEnd: 79 },
-  { id: 'evolution', label: 'Evolution', frameStart: 80, frameEnd: 139 },
-  { id: 'showcase', label: 'Showcase', frameStart: 140, frameEnd: 179 },
-  { id: 'exploded', label: 'Blueprint', frameStart: -1, frameEnd: -1 },
-  { id: 'craft', label: 'Craft', frameStart: 180, frameEnd: 209 },
-  { id: 'driving', label: 'Drive', frameStart: -2, frameEnd: -2 },
-  { id: 'future', label: 'Future', frameStart: 210, frameEnd: 239 },
+  { id: 'hero', label: 'Reveal', type: 'main', frameStart: 0, frameEnd: 39 },
+  { id: 'legacy', label: 'Legacy', type: 'main', frameStart: 40, frameEnd: 79 },
+  { id: 'evolution', label: 'Evolution', type: 'main', frameStart: 80, frameEnd: 139 },
+  { id: 'showcase', label: 'Showcase', type: 'main', frameStart: 140, frameEnd: 179 },
+  { id: 'exploded', label: 'Blueprint', type: 'exploded' },
+  { id: 'craft', label: 'Craft', type: 'main', frameStart: 180, frameEnd: 209 },
+  { id: 'driving', label: 'Drive', type: 'drift' },
+  { id: 'future', label: 'Future', type: 'main', frameStart: 210, frameEnd: 239 },
+  { id: 'f1-transition', label: 'F1', type: 'transition' },
+  { id: 'f1-0', label: 'F1·1', type: 'f1', f1Start: 0, f1End: 239 },
+  { id: 'f1-1', label: 'F1·2', type: 'f1', f1Start: 240, f1End: 479 },
+  { id: 'f1-2', label: 'F1·3', type: 'f1', f1Start: 480, f1End: 719 },
+  { id: 'f1-3', label: 'F1·4', type: 'f1', f1Start: 720, f1End: 959 },
 ]
 
 export default function App() {
   const [loaded, setLoaded] = useState(false)
-  const [ready, setReady] = useState(false) // staged: true after canvas paints frame 0
+  const [ready, setReady] = useState(false)
   const [images, setImages] = useState([])
   const [explodedImages, setExplodedImages] = useState([])
   const [driftImages, setDriftImages] = useState([])
+  const [f1Images, setF1Images] = useState([])
   const [currentFrame, setCurrentFrame] = useState(0)
   const [explodedFrame, setExplodedFrame] = useState(0)
   const [driftFrame, setDriftFrame] = useState(0)
+  const [f1Frame, setF1Frame] = useState(0)
   const [activeScene, setActiveScene] = useState(0)
   const [activeCanvas, setActiveCanvas] = useState('main')
   const scrollContentRef = useRef(null)
   const lenisRef = useRef(null)
 
-  const handleLoadComplete = useCallback((loadedImages, loadedExploded, loadedDrift) => {
-    setImages(loadedImages)
+  const handleLoadComplete = useCallback((loadedMain, loadedExploded, loadedDrift, loadedF1) => {
+    setImages(loadedMain)
     setExplodedImages(loadedExploded)
     setDriftImages(loadedDrift)
+    setF1Images(loadedF1)
     setLoaded(true)
 
-    // Staged entrance: wait for first frame to paint, then mark ready
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         setReady(true)
@@ -63,18 +73,18 @@ export default function App() {
     })
   }, [])
 
-  // Initialize Lenis — only after ready
+  // Initialize Lenis
   useEffect(() => {
     if (!ready) return
 
     const lenis = new Lenis({
-      duration: 1.0,
+      duration: 1.4,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 1.4,
-      touchMultiplier: 2,
+      wheelMultiplier: 1.2,
+      touchMultiplier: 1.5,
       syncTouch: true,
     })
 
@@ -86,11 +96,10 @@ export default function App() {
     return () => { lenis.destroy() }
   }, [ready])
 
-  // GSAP ScrollTrigger — only after ready
+  // GSAP ScrollTrigger
   useEffect(() => {
     if (!ready || !scrollContentRef.current) return
 
-    // Small delay to let DOM settle before measuring
     const timer = setTimeout(() => {
       const sections = document.querySelectorAll('.scene-section')
 
@@ -98,18 +107,30 @@ export default function App() {
         const scene = SCENES[index]
         if (!scene) return
 
-        if (scene.id === 'exploded') {
+        // Transition = hide all canvases (pure black BG shows through)
+        if (scene.type === 'transition') {
+          ScrollTrigger.create({
+            trigger: section,
+            start: 'top top',
+            end: 'bottom top',
+            onEnter: () => { setActiveScene(index); setActiveCanvas('none') },
+            onEnterBack: () => { setActiveScene(index); setActiveCanvas('none') },
+            onLeaveBack: () => setActiveCanvas('main'),
+          })
+          return
+        }
+
+        if (scene.type === 'exploded') {
           ScrollTrigger.create({
             trigger: section,
             start: 'top top',
             end: 'bottom top',
             scrub: 0.8,
             onUpdate: (self) => {
-              const frameIndex = Math.min(
+              setExplodedFrame(Math.min(
                 Math.floor(self.progress * TOTAL_EXPLODED),
                 TOTAL_EXPLODED - 1
-              )
-              setExplodedFrame(frameIndex)
+              ))
             },
             onEnter: () => { setActiveScene(index); setActiveCanvas('exploded') },
             onEnterBack: () => { setActiveScene(index); setActiveCanvas('exploded') },
@@ -119,18 +140,17 @@ export default function App() {
           return
         }
 
-        if (scene.id === 'driving') {
+        if (scene.type === 'drift') {
           ScrollTrigger.create({
             trigger: section,
             start: 'top top',
             end: 'bottom top',
             scrub: 0.8,
             onUpdate: (self) => {
-              const frameIndex = Math.min(
+              setDriftFrame(Math.min(
                 Math.floor(self.progress * TOTAL_DRIFT),
                 TOTAL_DRIFT - 1
-              )
-              setDriftFrame(frameIndex)
+              ))
             },
             onEnter: () => { setActiveScene(index); setActiveCanvas('drift') },
             onEnterBack: () => { setActiveScene(index); setActiveCanvas('drift') },
@@ -140,19 +160,37 @@ export default function App() {
           return
         }
 
-        const frameCount = scene.frameEnd - scene.frameStart + 1
+        if (scene.type === 'f1') {
+          const count = scene.f1End - scene.f1Start + 1
+          ScrollTrigger.create({
+            trigger: section,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1.5,
+            onUpdate: (self) => {
+              setF1Frame(Math.min(
+                scene.f1Start + Math.floor(self.progress * count),
+                scene.f1End
+              ))
+            },
+            onEnter: () => { setActiveScene(index); setActiveCanvas('f1') },
+            onEnterBack: () => { setActiveScene(index); setActiveCanvas('f1') },
+          })
+          return
+        }
 
+        // Default: main canvas
+        const frameCount = scene.frameEnd - scene.frameStart + 1
         ScrollTrigger.create({
           trigger: section,
           start: 'top top',
           end: 'bottom top',
           scrub: 0.8,
           onUpdate: (self) => {
-            const frameIndex = Math.min(
+            setCurrentFrame(Math.min(
               scene.frameStart + Math.floor(self.progress * frameCount),
               scene.frameEnd
-            )
-            setCurrentFrame(frameIndex)
+            ))
           },
           onEnter: () => { setActiveScene(index); setActiveCanvas('main') },
           onEnterBack: () => { setActiveScene(index); setActiveCanvas('main') },
@@ -160,7 +198,7 @@ export default function App() {
       })
 
       ScrollTrigger.refresh()
-    }, 100)
+    }, 150)
 
     return () => {
       clearTimeout(timer)
@@ -174,7 +212,7 @@ export default function App() {
 
       {loaded && (
         <>
-          {/* Frame canvases — always mounted once loaded */}
+          {/* 4 frame canvases with crossfade */}
           <FrameCanvas
             images={images}
             currentFrame={currentFrame}
@@ -189,6 +227,11 @@ export default function App() {
             images={driftImages}
             currentFrame={driftFrame}
             style={{ opacity: activeCanvas === 'drift' ? 1 : 0 }}
+          />
+          <FrameCanvas
+            images={f1Images}
+            currentFrame={f1Frame}
+            style={{ opacity: activeCanvas === 'f1' ? 1 : 0 }}
           />
 
           <Navbar />
@@ -215,6 +258,8 @@ export default function App() {
             <CraftScene />
             <DrivingScene />
             <FutureScene />
+            <F1Transition />
+            <F1Scene />
           </div>
 
           <Footer />

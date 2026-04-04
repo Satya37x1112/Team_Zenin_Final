@@ -51,14 +51,19 @@
   pointer-events: auto;
 }
 
-.scene-section--hero { height: 250vh; }
-.scene-section--legacy { height: 200vh; }
-.scene-section--evolution { height: 250vh; }
-.scene-section--showcase { height: 200vh; }
-.scene-section--exploded { height: 250vh; }
-.scene-section--craft { height: 150vh; }
-.scene-section--driving { height: 250vh; }
-.scene-section--future { height: 200vh; }
+.scene-section--hero { height: 500vh; }
+.scene-section--legacy { height: 400vh; }
+.scene-section--evolution { height: 500vh; }
+.scene-section--showcase { height: 400vh; }
+.scene-section--exploded { height: 500vh; }
+.scene-section--craft { height: 300vh; }
+.scene-section--driving { height: 500vh; }
+.scene-section--future { height: 400vh; }
+.scene-section--f1t { height: 300vh; }
+.scene-section--f1-0 { height: 400vh; }
+.scene-section--f1-1 { height: 400vh; }
+.scene-section--f1-2 { height: 400vh; }
+.scene-section--f1-3 { height: 400vh; }
 
 /* --- Scene Inner (sticky content) --- */
 .scene-inner {
@@ -1385,4 +1390,195 @@
   .exploded__card {
     padding: 10px 12px;
   }
+}
+
+/* ============================================
+   F1 TRANSITION — LIGHTS OUT
+   ============================================ */
+
+/* The transition MUST fully block the canvas behind it */
+.scene-section--f1t {
+  background: #000;
+  z-index: 6;
+}
+
+.scene-section--f1t .scene-inner {
+  background: #000;
+}
+
+.f1t__inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--container-padding);
+  background: #000;
+  position: relative;
+  z-index: 1;
+}
+
+.f1t__title {
+  font-family: var(--font-body);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-widest);
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: var(--space-2xl);
+  opacity: 0;
+}
+
+.f1t__lights {
+  display: flex;
+  gap: clamp(16px, 3vw, 40px);
+  margin-bottom: var(--space-2xl);
+}
+
+.f1t__light {
+  width: clamp(24px, 4vw, 48px);
+  height: clamp(24px, 4vw, 48px);
+  border-radius: 50%;
+  background: #cc1a1a;
+  opacity: 0.1;
+  box-shadow: none;
+  transition: box-shadow 0.1s ease;
+}
+
+.f1t__go {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  opacity: 0;
+}
+
+.f1t__go-line {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: var(--fw-black);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-white);
+  line-height: 1;
+}
+
+.f1t__go-sub {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-light);
+  letter-spacing: var(--ls-widest);
+  text-transform: lowercase;
+  color: var(--color-text-tertiary);
+  font-style: italic;
+}
+
+/* ============================================
+   F1 SCENE — MULTI-SECTION
+   ============================================ */
+.f1 {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 var(--container-padding);
+  padding-bottom: 8vh;
+}
+
+.f1__content {
+  max-width: 550px;
+}
+
+.f1__label {
+  font-family: var(--font-body);
+  font-size: var(--fs-label);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-widest);
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: var(--space-sm);
+  opacity: 0;
+}
+
+.f1__line {
+  width: 40px;
+  height: 2px;
+  background: var(--color-primary);
+  margin-bottom: var(--space-md);
+}
+
+.f1__title {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: var(--space-md);
+}
+
+.f1__title-line {
+  font-family: var(--font-display);
+  font-size: var(--fs-display);
+  font-weight: var(--fw-black);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  color: var(--color-text-primary);
+  text-shadow:
+    0 0 40px rgba(0, 0, 0, 0.7),
+    0 2px 4px rgba(0, 0, 0, 0.9);
+  display: block;
+  opacity: 0;
+}
+
+.f1__title-line--accent {
+  color: var(--color-primary-light);
+  text-shadow:
+    0 0 30px rgba(192, 57, 43, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.f1__subtitle {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-light);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  max-width: 420px;
+  opacity: 0;
+  text-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
+}
+
+.f1__tag {
+  position: absolute;
+  bottom: 8vh;
+  right: var(--container-padding);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  opacity: 0.3;
+}
+
+.f1__tag-number {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: var(--fw-black);
+  color: var(--color-text-primary);
+  opacity: 0.15;
+  line-height: 1;
+}
+
+.f1__tag-divider {
+  width: 30px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.f1__tag-text {
+  font-family: var(--font-body);
+  font-size: var(--fs-label);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--ls-widest);
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
 }
