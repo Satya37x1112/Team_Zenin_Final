@@ -51,14 +51,14 @@
   pointer-events: auto;
 }
 
-.scene-section--hero { height: 500vh; }
-.scene-section--legacy { height: 400vh; }
-.scene-section--evolution { height: 500vh; }
-.scene-section--showcase { height: 400vh; }
-.scene-section--exploded { height: 500vh; }
-.scene-section--craft { height: 300vh; }
-.scene-section--driving { height: 500vh; }
-.scene-section--future { height: 400vh; }
+.scene-section--hero { height: 250vh; }
+.scene-section--legacy { height: 200vh; }
+.scene-section--evolution { height: 250vh; }
+.scene-section--showcase { height: 200vh; }
+.scene-section--exploded { height: 250vh; }
+.scene-section--craft { height: 150vh; }
+.scene-section--driving { height: 250vh; }
+.scene-section--future { height: 200vh; }
 
 /* --- Scene Inner (sticky content) --- */
 .scene-inner {
