@@ -51,19 +51,19 @@
   pointer-events: auto;
 }
 
-.scene-section--hero { height: 300vh; }
-.scene-section--legacy { height: 250vh; }
-.scene-section--evolution { height: 300vh; }
-.scene-section--showcase { height: 250vh; }
-.scene-section--exploded { height: 300vh; }
-.scene-section--craft { height: 200vh; }
-.scene-section--driving { height: 300vh; }
-.scene-section--future { height: 250vh; }
-.scene-section--f1t { height: 200vh; }
-.scene-section--f1-0 { height: 300vh; }
-.scene-section--f1-1 { height: 300vh; }
-.scene-section--f1-2 { height: 300vh; }
-.scene-section--f1-3 { height: 300vh; }
+.scene-section--hero { height: 500vh; }
+.scene-section--legacy { height: 400vh; }
+.scene-section--evolution { height: 500vh; }
+.scene-section--showcase { height: 400vh; }
+.scene-section--exploded { height: 500vh; }
+.scene-section--craft { height: 300vh; }
+.scene-section--driving { height: 500vh; }
+.scene-section--future { height: 400vh; }
+.scene-section--f1t { height: 300vh; }
+.scene-section--f1-0 { height: 400vh; }
+.scene-section--f1-1 { height: 400vh; }
+.scene-section--f1-2 { height: 400vh; }
+.scene-section--f1-3 { height: 400vh; }
 
 /* --- Scene Inner (sticky content) --- */
 .scene-inner {

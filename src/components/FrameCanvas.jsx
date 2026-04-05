@@ -31,7 +31,7 @@ export default function FrameCanvas({ images, currentFrame, style = {} }) {
 
     // Lerp the display frame toward target for smooth motion
     const diff = target - display
-    const newDisplay = Math.abs(diff) < 0.05 ? target : display + diff * 0.25
+    const newDisplay = Math.abs(diff) < 0.05 ? target : display + diff * 0.15
 
     displayFrameRef.current = newDisplay
 
