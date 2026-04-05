@@ -78,14 +78,15 @@ export default function App() {
     if (!ready) return
 
     const lenis = new Lenis({
-      duration: 1.4,
+      duration: 1.8,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 1.2,
-      touchMultiplier: 1.5,
+      wheelMultiplier: 0.9,
+      touchMultiplier: 1.2,
       syncTouch: true,
+      lerp: 0.08,
     })
 
     lenisRef.current = lenis
@@ -125,7 +126,7 @@ export default function App() {
             trigger: section,
             start: 'top top',
             end: 'bottom top',
-            scrub: 0.8,
+            scrub: 1.5,
             onUpdate: (self) => {
               setExplodedFrame(Math.min(
                 Math.floor(self.progress * TOTAL_EXPLODED),
@@ -145,7 +146,7 @@ export default function App() {
             trigger: section,
             start: 'top top',
             end: 'bottom top',
-            scrub: 0.8,
+            scrub: 1.5,
             onUpdate: (self) => {
               setDriftFrame(Math.min(
                 Math.floor(self.progress * TOTAL_DRIFT),
@@ -185,7 +186,7 @@ export default function App() {
           trigger: section,
           start: 'top top',
           end: 'bottom top',
-          scrub: 0.8,
+          scrub: 2,
           onUpdate: (self) => {
             setCurrentFrame(Math.min(
               scene.frameStart + Math.floor(self.progress * frameCount),

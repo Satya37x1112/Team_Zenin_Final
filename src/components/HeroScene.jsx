@@ -65,15 +65,16 @@ export default function HeroScene() {
         duration: 1.2,
       }, '-=0.5')
 
-      // Scroll-driven fadeout
+      // Scroll-driven fadeout — smooth and gradual
       gsap.to(heroRef.current, {
         opacity: 0,
-        y: -30,
+        y: -40,
+        ease: 'none',
         scrollTrigger: {
           trigger: section,
-          start: '20% top',
-          end: '50% top',
-          scrub: 2,
+          start: '15% top',
+          end: '45% top',
+          scrub: 3,
         },
       })
     }, section)
